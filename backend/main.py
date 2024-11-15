@@ -1,7 +1,7 @@
 import re
 from typing import List, Literal
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -44,7 +44,7 @@ def replace_duplicated_words(message: str) -> str:
     return final_result
 
 
-@app.post("/api/chat", response_model=ChatResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(chat_message: ChatMessage):
     bot_response = replace_duplicated_words(chat_message.new_message)
 
@@ -54,3 +54,26 @@ async def chat_endpoint(chat_message: ChatMessage):
     updated_history = chat_message.history + [user_message, bot_message]
 
     return ChatResponse(updated_history=updated_history)
+
+
+class SortRequest(BaseModel):
+    array: List[int]
+
+
+class SortResponse(BaseModel):
+    sorted_array: List[int]
+
+
+def quicksort(arr: List[int]) -> List[int]:
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[0]
+    less_than_pivot = [x for x in arr[1:] if x <= pivot]
+    greater_than_pivot = [x for x in arr[1:] if x > pivot]
+    return quicksort(less_than_pivot) + [pivot] + quicksort(greater_than_pivot)
+
+
+@app.post("/api/sort", response_model=SortResponse)
+async def sort_endpoint(sort_request: SortRequest):
+    sorted_array = quicksort(sort_request.array)
+    return SortResponse(sorted_array=sorted_array)

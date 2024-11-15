@@ -17,7 +17,7 @@ def test_chat_endpoint():
         }
     )
 
-    assert response.status_code == 201
+    assert response.status_code == 200
     data = response.json()
     assert "updated_history" in data
 
