@@ -92,8 +92,6 @@ export default defineComponent({
         const lastBotMessage = data.updated_history[botIndex];
         history.value[botIndex] = {...lastBotMessage, processing: false};
 
-        nextTick(scrollToBottom);
-
         input.value = ""; 
       } catch (err) {
         console.error(err);
@@ -102,7 +100,8 @@ export default defineComponent({
           message: "Error: Could not fetch response. ", 
           processing: false
         };
-
+      }
+      finally{
         nextTick(scrollToBottom);
       }
     };
