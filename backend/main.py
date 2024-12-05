@@ -33,19 +33,16 @@ class ChatResponse(BaseModel):
 def replace_duplicated_words(message: str) -> str:
     words = re.findall(r'\b\w+\b|[^\w\s]', message)
     seen_words = set()
-    result = []
+    final_result = ""
 
-    for word in words:
+    for i, word in enumerate(words):
         normalized_word = re.sub(r'[^\w]', '', word).lower()
         if normalized_word in seen_words and normalized_word != '':
-            result.append("fake")
+            word = "fake"
         else:
-            result.append(word)
             if normalized_word:
                 seen_words.add(normalized_word)
 
-    final_result = ""
-    for i, word in enumerate(result):
         if i > 0 and re.match(r'\w', word):
             final_result += " "
         final_result += word
